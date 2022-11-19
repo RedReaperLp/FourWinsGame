@@ -175,7 +175,7 @@ public class Main {
                     dos.close();
                     Process process = Runtime.getRuntime().exec("cmd /c start update.bat");
                 } else {
-                    System.out.println("There is a new version available. Please download it from \"" + downloadUrl + "\" and restart the program.\nGuide:\nrm " + fileName + "\nwget " + downloadUrl);
+                    System.out.println("There is a new version available. Please download it from \"" + downloadUrl + "\" and restart the program.\nGuide:\nrm " + fileName + "\nwget " + downloadUrl + "\n./start.sh");
                 }
                 TimeUnit.SECONDS.sleep(10);
                 System.exit(0);
