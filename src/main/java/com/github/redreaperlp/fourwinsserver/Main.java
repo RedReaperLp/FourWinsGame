@@ -29,15 +29,69 @@ public class Main {
      * @param args depending on the arguments, the program will start as a server or a client
      */
     public static void main(String[] args) throws InterruptedException {
+        Main main = new Main();
+        Console console = System.console();
         boolean linux = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("linux");
-        System.out.println("OS: " + System.getProperty("os.name"));
+        File startFileWindows = new File("start.bat");
+        File startFileLinux = new File("start.sh");
+        if (console == null) {
+            if (linux) {
+                createRunFile(startFileLinux);
+            } else {
+                createRunFile(startFileWindows);
+            }
+        }
         if (linux) {
-            for (int i = 0; i < 10; i++) {
-                ProcessBuilder pb = new ProcessBuilder("for session in $(screen -ls | grep -o '[0-9]*\\.FourWins'); do screen -S \"${session}\" -X quit; done\n");
+            if (args.length == 0) {
+                System.out.println("Please insert the arguments \"[1]\" or \"[2]\" to start the program as a [server] or a [client]");
+                main.consoleInput();
                 try {
-                    pb.start();
-                    System.out.println("Killed all screens");
+                    if (main.isServer) {
+                        startFileLinux.createNewFile();
+                        FileWriter writer = new FileWriter(startFileLinux);
+                        writer.write("screen -S \"FourWins\" java -jar FourWins.jar -server");
+                        writer.close();
+                        ProcessBuilder pb = new ProcessBuilder("chmod", "+x", "start.sh");
+                        pb.start();
+                    } else {
+                        startFileLinux.createNewFile();
+                        FileWriter writer = new FileWriter(startFileLinux);
+                        writer.write("java -jar FourWins.jar -client");
+                        writer.close();
+                    }
+                    System.out.println("Please restart the program, you can now start it with \"./start.sh\"");
+                    TimeUnit.SECONDS.sleep(5);
+                    System.exit(0);
                 } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        } else {
+            if (args.length == 0) {
+                System.out.println("Please insert the arguments \"[1]\" or \"[2]\" to start the program as a [server] or a [client]");
+                main.consoleInput();
+                try {
+                    String path = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+                    path = path.substring(path.lastIndexOf("\\") + 1);
+                    if (main.isServer) {
+                        startFileWindows.createNewFile();
+                        FileWriter writer = new FileWriter(startFileWindows);
+                        writer.write("java -jar " + path + " -server");
+                        writer.close();
+                    } else {
+                        startFileWindows.createNewFile();
+                        FileWriter writer = new FileWriter(startFileWindows);
+                        writer.write("java -jar " + path + " -client");
+                        writer.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                    TimeUnit.SECONDS.sleep(5);
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -69,8 +123,6 @@ public class Main {
             }
         } catch (IOException e) {
         }
-
-        Main main = new Main();
         String vString = "";
         for (char c : String.valueOf(localeVersion).toCharArray()) {
             vString = vString + c + ".";
@@ -136,8 +188,40 @@ public class Main {
         }
     }
 
+    private static void createRunFile(File startFile) {
+        if (!startFile.exists()) {
+            try {
+                startFile.createNewFile();
+                FileWriter writer = new FileWriter(startFile);
+                String path = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+                writer.write("java -jar " + path.substring(path.lastIndexOf("\\") + 1));
+                writer.close();
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.exit(0);
+        }
+    }
+
     public void reInitClient() {
         new Client();
+    }
+
+    public void consoleInput() {
+        Console console = System.console();
+        String input = console.readLine();
+        if (input.equals("1") || input.equals("server")) {
+            isServer = true;
+        } else if (input.equals("2") || input.equals("client")) {
+            isServer = false;
+        } else {
+            System.out.println("Please enter a valid Input!");
+            consoleInput();
+        }
     }
 
     /**

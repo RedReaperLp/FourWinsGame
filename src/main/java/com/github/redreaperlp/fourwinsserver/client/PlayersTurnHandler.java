@@ -11,6 +11,7 @@ import java.io.Console;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class PlayersTurnHandler implements Runnable {
 
@@ -86,7 +87,7 @@ public class PlayersTurnHandler implements Runnable {
                             printLine(20);
                             System.out.println("\u001B[32mYou won!\u001B[0m");
                             System.out.println("If you want to play again, just rerun the program");
-                            printLine(2);
+                            TimeUnit.SECONDS.sleep(5);
                             System.exit(0);
                             return;
                         }

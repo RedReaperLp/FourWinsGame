@@ -212,11 +212,24 @@ public class ServerThread implements Runnable {
                     if (input != null) {
                         switch (spCmd.command()) {
                             case SET_STONE -> {
+                                int pos = 0;
+                                try {
+                                    pos = Integer.parseInt(spCmd.specifiedCommand());
+                                } catch (NumberFormatException e) {
+                                    writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_INVALIDSET, "1." + lineBlock.getRowSize()));
+                                    writer.flush();
+                                }
                                 if (validTurn) {
                                     if (Main.wantColoredConsole) {
                                         System.out.println(YELLOW + "User " + GREEN + user.name() + YELLOW + " set stone in column " + RED + spCmd.specifiedCommand() + YELLOW + " in game " + GREEN + gameID + YELLOW + "." + RESET);
                                     } else {
                                         System.out.println("User " + user.name() + " set stone in column " + spCmd.specifiedCommand() + " in game " + gameID + ".");
+                                    }
+                                } else if (pos <= 0 || pos > lineBlock.getRowSize()) {
+                                    if (Main.wantColoredConsole) {
+                                        System.out.println(YELLOW + "User " + GREEN + user.name() + YELLOW + " tried to set stone in column " + RED + spCmd.specifiedCommand() + YELLOW + " in game " + GREEN + gameID + YELLOW + ", but it was invalid." + RESET);
+                                    } else {
+                                        System.out.println("User " + user.name() + " tried to set stone in column " + spCmd.specifiedCommand() + " in game " + gameID + ", but it was invalid.");
                                     }
                                 } else {
                                     if (Main.wantColoredConsole) {

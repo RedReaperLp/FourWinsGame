@@ -1,7 +1,6 @@
 package com.github.redreaperlp.fourwinsserver.server.objects;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class LineBlock {
     private ArrayList<Line> lines = new ArrayList<>();
@@ -93,7 +92,6 @@ public class LineBlock {
                 check += i + "-";
             }
             if (check.contains(val + "-" + val + "-" + val + "-" + val)) {
-                System.out.println(check);
                 return true;
             }
         }
@@ -105,7 +103,6 @@ public class LineBlock {
                 check += lines.get(i).getColInRow(row) + "-";
             }
             if (check.contains(val + "-" + val + "-" + val + "-" + val)) {
-                System.out.println(check);
                 return true;
             }
         }
@@ -125,7 +122,6 @@ public class LineBlock {
                 y++;
             }
             if (check.contains(val + "-" + val + "-" + val + "-" + val)) {
-                System.out.println(check);
                 return true;
             }
         }

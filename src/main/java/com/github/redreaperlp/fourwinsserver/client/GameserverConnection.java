@@ -137,6 +137,11 @@ public class GameserverConnection implements Runnable {
         } else {
             System.out.println("if you want to play again, please restart the program");
         }
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         System.exit(0);
     }
 
