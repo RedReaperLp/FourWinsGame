@@ -122,6 +122,7 @@ public class Main {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
         String vString = "";
         for (char c : String.valueOf(localeVersion).toCharArray()) {
@@ -163,7 +164,6 @@ public class Main {
                 }
                 String path = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
                 String fileName = path.substring(path.lastIndexOf("\\") + 1);
-                TimeUnit.SECONDS.sleep(2);
                 URL url = new URL(downloadUrl);
                 if (!linux) {
                     System.out.println("A new version is available: " + versionString.substring(0, versionString.length() - 1) + " - Downloading now...");
@@ -173,13 +173,14 @@ public class Main {
                     dos.writeBytes("bitsadmin.exe /transfer \"Update\" " + downloadUrl + " " + System.getProperty("user.dir") + "\\" + fileName);
                     dos.writeBytes("\njava -jar " + fileName + " " + args[0]);
                     dos.close();
+                    TimeUnit.SECONDS.sleep(2);
                     Process process = Runtime.getRuntime().exec("cmd /c start update.bat");
                 } else {
                     System.out.println("There is a new version available. Please download it from \"" + downloadUrl + "\" and restart the program.\nGuide:\nrm " + fileName + "\nwget " + downloadUrl + "\n./start.sh");
                 }
-                TimeUnit.SECONDS.sleep(10);
                 System.exit(0);
             } catch (MalformedURLException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (URISyntaxException e) {
