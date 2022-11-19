@@ -15,15 +15,23 @@ import java.util.Scanner;
 public class Client {
     private int port;
     Config config = new Config();
+    String RED = "\u001B[31m";
+    String RESET = "\u001B[0m";
+    String YELLOW = "\u001B[33m";
+    String GREEN = "\u001B[32m";
 
     public Client() {
         Codec codec = new Codec();
         Main main = new Main();
-        System.out.println("Connecting to server...");
+        if (Main.wantColoredConsole) {
+            System.out.println(GREEN + "Connecting to server..." + RESET);
+        } else {
+            System.out.println("Connecting to server...");
+        }
         try {
             Socket socket = new Socket(Main.config.getConfig(ConfigType.SERVER_ADDRESS.value()), Integer.parseInt(Main.config.getConfig(ConfigType.SERVER_PORT.value())));
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
-            writer.println(codec.userSendString(config.getConfig(ConfigType.PLAYER_NAME.value()), config.getConfig(ConfigType.PLAYER_PASSWORD.value()), ClientCommand.ASK_FOR_SERVER));
+            writer.println(codec.userSendString(config.getConfig(ConfigType.PLAYER_NAME.value()), config.getConfig(ConfigType.PLAYER_PASSWORD.value()), ClientCommand.ASK_FOR_SERVER, String.valueOf(Main.localeVersion)));
             writer.flush();
             Scanner scanner = new Scanner(socket.getInputStream());
             String input = scanner.nextLine();
@@ -38,7 +46,11 @@ public class Client {
                         iAmX = Boolean.parseBoolean(data[1]);
                         iAmX_SET = true;
                     }
-                    System.out.println("Change Port: " + port);
+                    if (Main.wantColoredConsole) {
+                        System.out.println(GREEN + "Change Port: " + RED + port + RESET);
+                    } else {
+                        System.out.println("Change Port: " + port);
+                    }
                     GameserverConnection gameserverConnection = new GameserverConnection();
                     gameserverConnection.port = port;
                     gameserverConnection.name = config.getConfig(ConfigType.PLAYER_NAME.value());
@@ -50,18 +62,45 @@ public class Client {
                     gameServer.start();
                     break;
                 case NO_GAMES_AVAILABLE:
-                    System.out.println("No Games available");
+                    if (Main.wantColoredConsole) {
+                        System.out.println(RED + "No Games available" + RESET);
+                    } else {
+                        System.out.println("No Games available");
+                    }
                     break;
                 case GAME_FULL:
-                    System.out.println("Game is full");
+                    if (Main.wantColoredConsole) {
+                        System.out.println(RED + "Game is full" + RESET);
+                    } else {
+                        System.out.println("Game is full");
+                    }
                     break;
                 case JOIN_NOT_ALLOWED:
-                    System.out.println("It seems like you configured the server settings wrong (port)");
+                    if (Main.wantColoredConsole) {
+                        System.out.println(RED + "It seems like you configured the server settings wrong (" + YELLOW + "port" + RED + ")" + RESET);
+                    } else {
+                        System.out.println("It seems like you configured the server settings wrong (port)");
+                    }
+                    break;
+                case NOTIFY_CLIENT_WRONGVERSION:
+                    String version = "";
+                    for (char c : answer.getAnswerData().toCharArray()) {
+                        version += c + ".";
+                    }
+                    if (Main.wantColoredConsole) {
+                        System.out.println(RED + "Wrong version, please use version " + YELLOW + version.substring(0, version.length() - 1) + RED + "!" + RESET);
+                    } else {
+                        System.out.println("Wrong version, please use version " + version.substring(0, version.length() - 1) + "!");
+                    }
                     break;
             }
             socket.close();
         } catch (IOException e) {
-            System.out.println("Server is not available");
+            if (Main.wantColoredConsole) {
+                System.out.println(RED + "Server is not available" + RESET);
+            } else {
+                System.out.println("Server is not available");
+            }
             System.exit(0);
         }
     }

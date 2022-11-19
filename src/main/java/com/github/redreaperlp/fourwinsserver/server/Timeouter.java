@@ -15,6 +15,10 @@ import java.util.concurrent.TimeUnit;
 public class Timeouter implements Runnable {
     public static ArrayList<User> users = new ArrayList<>();
     Config config = Main.config;
+    String RED = "\u001B[31m";
+    String RESET = "\u001B[0m";
+    String YELLOW = "\u001B[33m";
+    String GREEN = "\u001B[32m";
 
     @Override
     public void run() {
@@ -26,7 +30,11 @@ public class Timeouter implements Runnable {
                 for (User user : users) {
                     if (user.lastPing() >= timeout) {
                         user.timedOut();
-                        System.out.println("User " + user.name() + " timed out!");
+                        if (Main.wantColoredConsole) {
+                            System.out.println(RED + "User " + YELLOW + user.name() + RED + " timed out!" + RESET);
+                        } else {
+                            System.out.println("User " + user.name() + " timed out!");
+                        }
                     }
                     if (!user.isTimedOut()) {
                         user.pingInc();
@@ -59,9 +67,17 @@ public class Timeouter implements Runnable {
                                 }
                             }
                             if (foundWon) {
-                                System.out.println("Server " + server.gameID() + " stopped because of game end");
+                                if (Main.wantColoredConsole) {
+                                    System.out.println(GREEN + "Server " + YELLOW + server.gameID() + GREEN + " stopped because of game end" + RESET);
+                                } else {
+                                    System.out.println("Server " + server.gameID() + " stopped because of game end");
+                                }
                             } else if (!closed) {
-                                System.out.println("Server " + server.gameID() + " closed due to timeout");
+                                if (Main.wantColoredConsole) {
+                                    System.out.println(RED + "Server " + YELLOW + server.gameID() + RED + " closed due to timeout" + RESET);
+                                } else {
+                                    System.out.println("Server " + server.gameID() + " closed due to timeout");
+                                }
                             }
                             closed = true;
                         }

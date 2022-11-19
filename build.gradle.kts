@@ -23,6 +23,7 @@ tasks.getByName<Test>("test") {
 tasks {
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         archiveClassifier.set("")
+        archiveFileName.set("FourWins.jar")
         manifest {
             attributes(
                 "Main-Class" to "com.github.redreaperlp.fourwinsserver.Main"
