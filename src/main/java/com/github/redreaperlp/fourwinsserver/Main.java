@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static int localeVersion = 101;
+    public static int localeVersion = 102;
     public static Config config = new Config();
     boolean isServer = false;
     public static boolean wantColoredConsole = false;
@@ -175,7 +175,7 @@ public class Main {
                     dos.close();
                     Process process = Runtime.getRuntime().exec("cmd /c start update.bat");
                 } else {
-                    System.out.println("There is a new version available. Please download it from \"" + downloadUrl + "\" and restart the program.");
+                    System.out.println("There is a new version available. Please download it from \"" + downloadUrl + "\" and restart the program.\nGuide:\nrm " + fileName + "\nwget " + downloadUrl);
                 }
                 TimeUnit.SECONDS.sleep(10);
                 System.exit(0);
