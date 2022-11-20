@@ -23,9 +23,9 @@ public class InitServer {
      */
     public void init(int port, int maxServers) {
         if (Main.wantColoredConsole) {
-            System.out.println(GREEN + "Starting server..." + RESET);
+            System.out.println(GREEN + "Server Started" + RESET);
         } else {
-            System.out.println("Starting server...");
+            System.out.println("Server Started");
         }
         new LandingServer(port, maxServers);
     }

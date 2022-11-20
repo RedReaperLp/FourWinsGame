@@ -47,8 +47,10 @@ public class Client {
                         iAmX_SET = true;
                     }
                     if (Main.wantColoredConsole) {
+                        System.out.println(GREEN + "Connected to server" + RESET);
                         System.out.println(GREEN + "Change Port: " + RED + port + RESET);
                     } else {
+                        System.out.println("Connected to server");
                         System.out.println("Change Port: " + port);
                     }
                     GameserverConnection gameserverConnection = new GameserverConnection();
