@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static int localeVersion = 104;
+    public static int localeVersion = 105;
     public int latestVersion = 0;
     public String versionString = "";
     public static Config config = new Config();

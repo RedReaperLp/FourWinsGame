@@ -113,6 +113,11 @@ public class LandingServer {
                             } else {
                                 writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_WRONGVERSION, String.valueOf(Main.localeVersion)) + "\n");
                                 writer.flush();
+                                if (Main.wantColoredConsole) {
+                                    System.out.println(RED + "User " + user.name() + " tried to connect with the wrong version! (Local: " + Main.localeVersion + " | Remote: " + version + ")" + RESET);
+                                } else {
+                                    System.out.println("User " + user.name() + " tried to connect with the wrong version! (Local: " + Main.localeVersion + " | Remote: " + version + ")");
+                                }
                             }
                         }
                     }
