@@ -68,13 +68,13 @@ public class Timeouter implements Runnable {
                             }
                             if (foundWon) {
                                 if (Main.wantColoredConsole) {
-                                    System.out.println(GREEN + "Server " + YELLOW + server.gameID() + GREEN + " stopped because of game end" + RESET);
+                                    System.out.println(YELLOW + "Server " + GREEN + server.gameID() + YELLOW + " closed because of game end" + RESET);
                                 } else {
                                     System.out.println("Server " + server.gameID() + " stopped because of game end");
                                 }
                             } else if (!closed) {
                                 if (Main.wantColoredConsole) {
-                                    System.out.println(RED + "Server " + YELLOW + server.gameID() + RED + " closed due to timeout" + RESET);
+                                    System.out.println(YELLOW + "Server " + GREEN + server.gameID() + YELLOW + " closed due to timeout" + RESET);
                                 } else {
                                     System.out.println("Server " + server.gameID() + " closed due to timeout");
                                 }

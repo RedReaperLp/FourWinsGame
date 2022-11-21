@@ -5,12 +5,14 @@ import com.github.redreaperlp.fourwinsserver.objects.Answer;
 import com.github.redreaperlp.fourwinsserver.objects.Config;
 import com.github.redreaperlp.fourwinsserver.objects.enums.ClientCommand;
 import com.github.redreaperlp.fourwinsserver.objects.enums.ConfigType;
+import com.github.redreaperlp.fourwinsserver.server.Timeouter;
 import com.github.redreaperlp.fourwinsserver.util.Codec;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Client {
     private int port;
@@ -52,6 +54,30 @@ public class Client {
                     } else {
                         System.out.println("Connected to server");
                         System.out.println("Change Port: " + port);
+                    }
+                    for (String s : data) {
+                        if (s.contains(";")) {
+                            String[] data2 = data[1].split(";");
+                            if (data2[1].equals("wait")) {
+                                if (Main.wantColoredConsole) {
+                                    System.out.println(YELLOW + "Waiting for a second player..." + RESET);
+                                } else {
+                                    System.out.println("Waiting for a second player...");
+                                }
+                            } else if (data2[1].equals("welcome")) {
+                                if (Main.wantColoredConsole) {
+                                    System.out.println(YELLOW + "Your opponent starts," + GREEN + " Good Luck!" + RESET);
+                                } else {
+                                    System.out.println("Your opponent starts, Good Luck!");
+                                }
+                            } else if (data2[1].equals("welcomeBack")) {
+                                if (Main.wantColoredConsole) {
+                                    System.out.println(GREEN + "Welcome back!" + YELLOW + " You had an Timeout or you rejoined the game. :D" + RESET);
+                                } else {
+                                    System.out.println("Welcome back! You had an Timeout or you rejoined the game. :D");
+                                }
+                            }
+                        }
                     }
                     GameserverConnection gameserverConnection = new GameserverConnection();
                     gameserverConnection.port = port;
@@ -95,6 +121,15 @@ public class Client {
                         System.out.println("Wrong version, please use version " + version.substring(0, version.length() - 1) + "!");
                     }
                     break;
+                case ALREADY_LOGGED_IN:
+                    if (Main.wantColoredConsole) {
+                        System.out.println(RED + "You are already logged in from another location!" + RESET);
+                    } else {
+                        System.out.println("You are already logged in from another location!");
+                    }
+                    TimeUnit.SECONDS.sleep(3);
+                    System.exit(0);
+                    break;
             }
             socket.close();
         } catch (IOException e) {
@@ -104,6 +139,8 @@ public class Client {
                 System.out.println("Server is not available");
             }
             System.exit(0);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }

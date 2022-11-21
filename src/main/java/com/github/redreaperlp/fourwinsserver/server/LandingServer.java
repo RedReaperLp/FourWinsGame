@@ -63,12 +63,23 @@ public class LandingServer {
                                         foundPlayerInGame = true;
                                         int sign = server.serverThread().getPlayer(user.name()).sign();
                                         boolean isX = sign == 1;
-                                        writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_CHANGEPORT, server.port() + "_" + isX));
-                                        writer.flush();
-                                        if (Main.wantColoredConsole) {
-                                            System.out.println(GREEN + "Found player in game: " + YELLOW + user.name() + GREEN + " - in Server ID: " + YELLOW + server.gameID() + RESET);
+                                        User us = timeouter.getByName(user.name());
+                                        if (!us.isTimedOut()) {
+                                            writer.println(codec.userSendString(ServerAnswer.ALREADY_LOGGED_IN));
+                                            writer.flush();
+                                            if (Main.wantColoredConsole) {
+                                                System.out.println(YELLOW + "User " + user.name() + " tried to connect to the server from another destination" + RESET);
+                                            } else {
+                                                System.out.println("User " + user.name() + " tried to connect to the server from another destination");
+                                            }
                                         } else {
-                                            System.out.println("Found player in game: " + user.name() + " - in Server ID: " + server.gameID());
+                                            writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_CHANGEPORT, server.port() + "_" + isX + ";welcomeBack"));
+                                            writer.flush();
+                                            if (Main.wantColoredConsole) {
+                                                System.out.println(GREEN + "Found player in game: " + YELLOW + user.name() + GREEN + " - in Server ID: " + YELLOW + server.gameID() + RESET);
+                                            } else {
+                                                System.out.println("Found player in game: " + user.name() + " - in Server ID: " + server.gameID());
+                                            }
                                         }
                                     }
                                 }
@@ -78,7 +89,7 @@ public class LandingServer {
                                             server.addPlayer(new Player(user.name(), false, 2));
                                             timeouter.addUser(user);
                                             user.setServer(server);
-                                            writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_CHANGEPORT, String.valueOf(server.port() + "_" + "false")));
+                                            writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_CHANGEPORT, String.valueOf(server.port() + "_" + "false;welcome")));
                                             writer.flush();
                                             foundPlayerInGame = true;
                                             if (Main.wantColoredConsole) {
@@ -97,10 +108,10 @@ public class LandingServer {
                                             server.addPlayer(player);
                                             user.setServer(server);
                                             timeouter.addUser(user);
-                                            writer.println(new Codec().userSendString(ServerAnswer.NOTIFY_CLIENT_CHANGEPORT, String.valueOf(server.port() + "_" + "true")));
+                                            writer.println(new Codec().userSendString(ServerAnswer.NOTIFY_CLIENT_CHANGEPORT, String.valueOf(server.port() + "_" + "true;wait")));
                                             writer.flush();
                                             if (Main.wantColoredConsole) {
-                                                System.out.println(GREEN + "Server started on port " + RED + server.port() + GREEN + " with gameID: " + RED + server.gameID() + GREEN + " by the Player: " + RED + user.name() + RESET);
+                                                System.out.println(GREEN + "Server started on port " + YELLOW + server.port() + GREEN + " with gameID: " + YELLOW + server.gameID() + GREEN + " by the Player: " + YELLOW + user.name() + RESET);
                                             } else {
                                                 System.out.println("Server started on port " + server.port() + " with gameID: " + server.gameID() + " by the Player: " + user.name());
                                             }
