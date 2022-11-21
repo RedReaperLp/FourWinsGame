@@ -68,7 +68,7 @@ public class LandingServer {
                                             writer.println(codec.userSendString(ServerAnswer.ALREADY_LOGGED_IN));
                                             writer.flush();
                                             if (Main.wantColoredConsole) {
-                                                System.out.println(YELLOW + "User " + user.name() + " tried to connect to the server from another destination" + RESET);
+                                                System.out.println(YELLOW + "User " + GREEN + user.name() + YELLOW + " tried to connect to the server from another destination" + RESET);
                                             } else {
                                                 System.out.println("User " + user.name() + " tried to connect to the server from another destination");
                                             }
