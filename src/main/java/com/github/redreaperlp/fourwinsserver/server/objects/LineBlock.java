@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class LineBlock {
     private ArrayList<Line> lines = new ArrayList<>();
+    private int lastTurn = 0;
 
     /**
      * Constructor for the GameField
@@ -46,14 +47,28 @@ public class LineBlock {
      */
     public void print() {
         String topNumberPrint = "";
+        String lastMoveIndicator = "";
         for (int i = 1; i < lines.get(0).getRowSize() + 1; i++) {
             if (i < 10) {
                 topNumberPrint += " " + i + " ";
             } else {
                 topNumberPrint += i + " ";
             }
+            if (i == lastTurn) {
+                if (i < 10) {
+                    lastMoveIndicator += " ^ ";
+                } else {
+                    lastMoveIndicator += " ^";
+                }
+            } else {
+                if (i < 10) {
+                    lastMoveIndicator += "   ";
+                } else {
+                    lastMoveIndicator += "  ";
+                }
+            }
+            System.out.println(lastMoveIndicator);
         }
-        System.out.println(topNumberPrint);
         for (int i = 0; i < lines.size(); i++) {
             System.out.println(lines.get(i).toPrintString());
         }
@@ -69,6 +84,15 @@ public class LineBlock {
             }
         }
         return sendable;
+    }
+
+    public LineBlock(String sendable, int lastTurn) {
+        this.lastTurn = lastTurn;
+        String[] splits = sendable.split("/");
+        for (int i = 0; i < splits.length; i++) {
+            Line l = new Line(splits[i]);
+            lines.add(l);
+        }
     }
 
     public LineBlock(String sendable) {

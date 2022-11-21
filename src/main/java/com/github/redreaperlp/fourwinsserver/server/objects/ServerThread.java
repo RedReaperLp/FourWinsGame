@@ -36,6 +36,7 @@ public class ServerThread implements Runnable {
     private LineBlock lineBlock;
     private boolean waitingForPlayerSend = false;
     private boolean fieldFull = false;
+    private int lastTurn = 0;
 
     /**
      * Constructor
@@ -99,7 +100,7 @@ public class ServerThread implements Runnable {
                                     } else {
                                         if (otherPlayer != null) {
                                             if (otherPlayer.won()) {
-                                                writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_OPPONENTWON, otherPlayer.name()));
+                                                writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_OPPONENTWON, otherPlayer.name() + ";" + lastTurn + ";" + lineBlock.toSendable()));
                                                 writer.flush();
                                                 somethingPrinted = true;
                                                 init.getServer(gameID).close();

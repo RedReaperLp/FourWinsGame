@@ -54,8 +54,13 @@ public class GameserverConnection implements Runnable {
                 Answer answer = codec.toServerAnswer(input);
                 switch (answer.getAnswer()) {
                     case NOTIFY_CLIENT_OPPONENTWON -> {
+                        String playerName = answer.getAnswerData().split(";")[0];
+                        int lastTurn = Integer.parseInt(answer.getAnswerData().split(";")[1]);
+                        lineBlock = new LineBlock(answer.getAnswerData().split(";")[2], lastTurn);
                         printLine(20);
-                        System.out.println("\u001B[31m" + "You lost" + "\u001B[0m");
+                        System.out.println(RED + "You lost" + RESET);
+                        printLine(2);
+                        lineBlock.print();
                         shouldStop = true;
                         reset();
                         return;
@@ -88,6 +93,7 @@ public class GameserverConnection implements Runnable {
                         if (!myTurn) {
                             printLine(20);
                             lineBlock = new LineBlock(answer.getAnswerData());
+                            System.out.println(answer.getAnswerData());
                             printLine(2);
                             lineBlock.print();
                             System.out.print("It's your turn: ");

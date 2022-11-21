@@ -1,7 +1,6 @@
 package com.github.redreaperlp.fourwinsserver.server.objects;
 
 import com.github.redreaperlp.fourwinsserver.Main;
-import com.github.redreaperlp.fourwinsserver.objects.enums.ConfigType;
 
 import java.util.ArrayList;
 
