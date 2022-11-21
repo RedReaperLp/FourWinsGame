@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static int localeVersion = 103;
+    public static int localeVersion = 102;
     public int latestVersion = 0;
     public String versionString = "";
     public static Config config = new Config();
@@ -123,9 +123,9 @@ public class Main {
                 String fileName = path.substring(path.lastIndexOf("\\") + 1);
                 URL url = new URL(downloadUrl);
                 if (!linux) {
-                    main.updateLinux(fileName, downloadUrl, args);
-                } else {
                     main.updateWindows(fileName, downloadUrl, args);
+                } else {
+                    main.updateLinux(fileName, downloadUrl, args);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -134,7 +134,7 @@ public class Main {
         TimeUnit.SECONDS.sleep(2);
     }
 
-    public void updateLinux(String fileName, String downloadUrl, String[] args) {
+    public void updateWindows(String fileName, String downloadUrl, String[] args) {
         try {
             System.out.println("A new version is available: " + versionString.substring(0, versionString.length() - 1) + " - Downloading now...");
             File file = new File("update.bat");
@@ -142,7 +142,8 @@ public class Main {
             fos = new FileOutputStream(file);
             DataOutputStream dos = new DataOutputStream(fos);
             dos.writeBytes("bitsadmin.exe /transfer \"Update\" " + downloadUrl + " " + System.getProperty("user.dir") + "\\" + fileName);
-            dos.writeBytes("\njava -jar " + fileName + " " + args[0]);
+            dos.writeBytes("\nstart start.bat");
+            dos.writeBytes("\nexit");
             dos.close();
             TimeUnit.SECONDS.sleep(2);
             Process process = Runtime.getRuntime().exec("cmd /c start update.bat");
@@ -152,7 +153,7 @@ public class Main {
         } //Starts the update Linux
     }
 
-    public void updateWindows(String fileName, String downloadUrl, String[] args) {
+    public void updateLinux(String fileName, String downloadUrl, String[] args) {
         try {
             System.out.println();
             Process process = Runtime.getRuntime().exec("wget " + downloadUrl + " -O " + fileName);
