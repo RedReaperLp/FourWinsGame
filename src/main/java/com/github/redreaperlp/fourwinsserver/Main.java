@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static int localeVersion = 108;
+    public static int localeVersion = 109;
     public int latestVersion = 0;
     public String versionString = "";
     public static Config config = new Config();
@@ -142,7 +142,7 @@ public class Main {
             FileOutputStream fos = null;
             fos = new FileOutputStream(file);
             DataOutputStream dos = new DataOutputStream(fos);
-            dos.writeBytes("bitsadmin.exe /transfer \"Update\" " + downloadUrl + " \"" + System.getProperty("user.dir") + "\\" + fileName+"'");
+            dos.writeBytes("bitsadmin.exe /transfer \"Update\" " + downloadUrl + " \"" + System.getProperty("user.dir") + "\\" + fileName+"\"");
             dos.writeBytes("\nstart start.bat");
             dos.writeBytes("\nexit");
             dos.close();
