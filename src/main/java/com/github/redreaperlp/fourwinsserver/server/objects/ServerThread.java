@@ -258,8 +258,6 @@ public class ServerThread implements Runnable {
                         System.exit(0);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(0);
                 }
             }
         }
