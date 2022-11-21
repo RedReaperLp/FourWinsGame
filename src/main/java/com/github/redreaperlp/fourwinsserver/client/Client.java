@@ -5,7 +5,6 @@ import com.github.redreaperlp.fourwinsserver.objects.Answer;
 import com.github.redreaperlp.fourwinsserver.objects.Config;
 import com.github.redreaperlp.fourwinsserver.objects.enums.ClientCommand;
 import com.github.redreaperlp.fourwinsserver.objects.enums.ConfigType;
-import com.github.redreaperlp.fourwinsserver.server.Timeouter;
 import com.github.redreaperlp.fourwinsserver.util.Codec;
 
 import java.io.IOException;
@@ -45,7 +44,7 @@ public class Client {
                     boolean iAmX_SET = false;
                     boolean iAmX = false;
                     if (data.length > 1) {
-                        iAmX = Boolean.parseBoolean(data[1]);
+                        iAmX = Boolean.parseBoolean(data[1].split(";")[0]);
                         iAmX_SET = true;
                     }
                     if (Main.wantColoredConsole) {
