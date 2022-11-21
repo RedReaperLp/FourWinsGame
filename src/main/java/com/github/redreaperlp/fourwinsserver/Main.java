@@ -142,7 +142,7 @@ public class Main {
             FileOutputStream fos = null;
             fos = new FileOutputStream(file);
             DataOutputStream dos = new DataOutputStream(fos);
-            dos.writeBytes("bitsadmin.exe /transfer \"Update\" " + downloadUrl + " \"" + System.getProperty("user.dir") + "\"\\" + fileName);
+            dos.writeBytes("bitsadmin.exe /transfer \"Update\" " + downloadUrl + " \"" + System.getProperty("user.dir") + "\\" + fileName+"'");
             dos.writeBytes("\nstart start.bat");
             dos.writeBytes("\nexit");
             dos.close();
