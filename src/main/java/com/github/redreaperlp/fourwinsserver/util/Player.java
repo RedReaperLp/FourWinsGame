@@ -5,6 +5,7 @@ public class Player {
     private boolean isMyTurn;
     private int playerSign;
     private boolean won;
+    private boolean reconnected;
 
     public Player(String name, boolean isMyTurn, int playerSign) {
         this.name = name;
@@ -30,5 +31,13 @@ public class Player {
 
     public void won(boolean won) {
         this.won = won;
+    }
+
+    public boolean reconnected() {
+        return reconnected;
+    }
+
+    public void reconnected(boolean reconnected) {
+        this.reconnected = reconnected;
     }
 }

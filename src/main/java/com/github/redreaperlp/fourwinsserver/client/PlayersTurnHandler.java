@@ -57,16 +57,25 @@ public class PlayersTurnHandler implements Runnable {
                     switch (answer.getAnswer()) { //Checks the answer from the server
                         case NOTIFY_CLIENT_GAMESTONESET -> {
                             printLine(20);
-                            System.out.println("Gamestone set");
+                            if (Main.wantColoredConsole) {
+                                System.out.println(GREEN + "You set the stone" + RESET);
+                            } else {
+                                System.out.println("You set the stone");
+                            }
                             printLine(2);
                             lineBlock.setRowValue(intInput - 1, isX ? 1 : 2); //Sets the stone in the lineblock
-                            lineBlock.print();
+                            lineBlock.print(false);
+                            lineBlock.setLastTurn(intInput);
                             GameserverConnection.myTurn = false;
                             return;
                         }
                         case NOT_YOUR_TURN -> {
                             printLine(3);
-                            System.out.println("Not your turn");
+                            if (Main.wantColoredConsole) {
+                                System.out.println(RED + "It's not your turn" + RESET);
+                            } else {
+                                System.out.println("It's not your turn");
+                            }
                             return;
                         }
                         case NOTIFY_CLIENT_INVALIDSET -> {
@@ -82,12 +91,26 @@ public class PlayersTurnHandler implements Runnable {
                         case COL_FULL -> {
                             printLine(2);
                             System.out.println("Column " + answer.getAnswerData() + " is full, try another one");
+                            if (Main.wantColoredConsole) {
+                                System.out.println(RED + "Column " + GREEN + answer.getAnswerData() + YELLOW + " is full, try another one" + RESET);
+                            } else {
+                                System.out.println("Column " + answer.getAnswerData() + " is full, try another one");
+                            }
                         }
                         case NOTIFY_CLIENT_WON -> {
                             printLine(20);
-                            System.out.println("\u001B[32mYou won!\u001B[0m");
-                            System.out.println("If you want to play again, just rerun the program");
-                            TimeUnit.SECONDS.sleep(5);
+                            lineBlock.setRowValue(intInput - 1, isX ? 1 : 2); //Sets the stone in the lineblock
+                            lineBlock.setLastTurn(intInput);
+                            lineBlock.print(true);
+                            printLine(2);
+                            if (Main.wantColoredConsole) {
+                                System.out.println(GREEN + "You won!" + RESET);
+                                System.out.println(YELLOW + "If you want to play again, just rerun the program" + RESET);
+                            } else {
+                                System.out.println("You won!");
+                                System.out.println("If you want to play again, just rerun the program");
+                            }
+                            TimeUnit.SECONDS.sleep(2);
                             System.exit(0);
                             return;
                         }
@@ -96,7 +119,11 @@ public class PlayersTurnHandler implements Runnable {
                     System.out.println(e.getMessage());
                 }
             } catch (Exception e) { //If the input is not an integer it will ask for a new input
-                System.out.println("This isn´t a valid input, try again");
+                if (Main.wantColoredConsole) {
+                    System.out.println(RED + "Invalid input" + RESET);
+                } else {
+                    System.out.println("Invalid input");
+                }
             }
         }
     }

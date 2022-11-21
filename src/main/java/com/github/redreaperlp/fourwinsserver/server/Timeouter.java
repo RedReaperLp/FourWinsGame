@@ -28,7 +28,7 @@ public class Timeouter implements Runnable {
                 TimeUnit.SECONDS.sleep(1);
                 boolean closed = false;
                 for (User user : users) {
-                    if (user.lastPing() >= timeout) {
+                    if (user.lastPing() >= timeout && !user.isTimedOut()) {
                         user.timedOut();
                         if (Main.wantColoredConsole) {
                             System.out.println(RED + "User " + YELLOW + user.name() + RED + " timed out!" + RESET);

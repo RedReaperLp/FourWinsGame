@@ -75,10 +75,20 @@ public class LandingServer {
                                         } else {
                                             writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_CHANGEPORT, server.port() + "_" + isX + ";welcomeBack"));
                                             writer.flush();
-                                            if (Main.wantColoredConsole) {
-                                                System.out.println(GREEN + "Found player in game: " + YELLOW + user.name() + GREEN + " - in Server ID: " + YELLOW + server.gameID() + RESET);
+                                            User rcUser = timeouter.getByName(user.name());
+                                            if (rcUser.isTimedOut()) {
+                                                server.serverThread().getPlayer(user.name()).reconnected(true);
+                                                if (Main.wantColoredConsole) {
+                                                    System.out.println(YELLOW + "User " + GREEN + user.name() + YELLOW + " reconnected to the server" + RESET);
+                                                } else {
+                                                    System.out.println("User " + user.name() + " reconnected to the server");
+                                                }
                                             } else {
-                                                System.out.println("Found player in game: " + user.name() + " - in Server ID: " + server.gameID());
+                                                if (Main.wantColoredConsole) {
+                                                    System.out.println(GREEN + "Found player in game: " + YELLOW + user.name() + GREEN + " - in Server ID: " + YELLOW + server.gameID() + RESET);
+                                                } else {
+                                                    System.out.println("Found player in game: " + user.name() + " - in Server ID: " + server.gameID());
+                                                }
                                             }
                                         }
                                     }

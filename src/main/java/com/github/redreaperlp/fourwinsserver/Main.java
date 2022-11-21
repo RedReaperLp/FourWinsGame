@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static int localeVersion = 109;
+    public static int localeVersion = 111;
     public int latestVersion = 0;
     public String versionString = "";
     public static Config config = new Config();
@@ -54,6 +54,7 @@ public class Main {
         String[] line;
         String downloadUrl = "";
         int version = 0;
+        boolean errorCheckUrl = false;
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/RedReaperLP/FourWinsGame/releases/latest").openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -79,14 +80,14 @@ public class Main {
             } else {
                 System.out.println("Error while checking for Updates, make sure to have a wifi connection");
             }
-            System.exit(0);
+            errorCheckUrl = true;
         }
         String vString = "";
         for (char c : String.valueOf(localeVersion).toCharArray()) {
             vString = vString + c + ".";
         } //add dots to version string
         vString = vString.substring(0, vString.length() - 1); //remove last dot
-        if (main.localeVersion >= version) {
+        if (main.localeVersion >= version || errorCheckUrl) {
             switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "-server":
                     main.isServer = true;

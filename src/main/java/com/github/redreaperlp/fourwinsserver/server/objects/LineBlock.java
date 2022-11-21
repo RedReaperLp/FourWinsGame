@@ -1,10 +1,15 @@
 package com.github.redreaperlp.fourwinsserver.server.objects;
 
+import com.github.redreaperlp.fourwinsserver.Main;
+
 import java.util.ArrayList;
 
 public class LineBlock {
     private ArrayList<Line> lines = new ArrayList<>();
     private int lastTurn = 0;
+    String LIGHT_BLUE = "\u001B[94m";
+    String RESET = "\u001B[0m";
+    String AQUA = "\u001B[96m";
 
     /**
      * Constructor for the GameField
@@ -45,7 +50,7 @@ public class LineBlock {
     /**
      * prints the GameField, first line with number of the columns and then the rows
      */
-    public void print() {
+    public void print(boolean showLastTurn) {
         String topNumberPrint = "";
         String lastMoveIndicator = "";
         for (int i = 1; i < lines.get(0).getRowSize() + 1; i++) {
@@ -54,19 +59,28 @@ public class LineBlock {
             } else {
                 topNumberPrint += i + " ";
             }
-            if (i == lastTurn) {
-                if (i < 10) {
-                    lastMoveIndicator += " ^ ";
+            if (showLastTurn) {
+                if (i == lastTurn) {
+                    if (i < 10) {
+                        lastMoveIndicator += " ^ ";
+                    } else {
+                        lastMoveIndicator += " ^";
+                    }
                 } else {
-                    lastMoveIndicator += " ^";
-                }
-            } else {
-                if (i < 10) {
-                    lastMoveIndicator += "   ";
-                } else {
-                    lastMoveIndicator += "  ";
+                    if (i < 10) {
+                        lastMoveIndicator += "   ";
+                    } else {
+                        lastMoveIndicator += "  ";
+                    }
                 }
             }
+        }
+        if (Main.wantColoredConsole) {
+            System.out.println(LIGHT_BLUE + topNumberPrint + RESET);
+        } else {
+            System.out.println(topNumberPrint);
+        }
+        if (showLastTurn) {
             System.out.println(lastMoveIndicator);
         }
         for (int i = 0; i < lines.size(); i++) {
@@ -178,5 +192,13 @@ public class LineBlock {
             }
         }
         return true;
+    }
+
+    public void setLastTurn(int lastTurn) {
+        this.lastTurn = lastTurn;
+    }
+
+    public int getLastTurn() {
+        return lastTurn;
     }
 }

@@ -95,16 +95,28 @@ public class ServerThread implements Runnable {
                                         pinged.add(player);
                                         if (pinged.size() == 2) {
                                             init.getServer(gameID).close();
-                                            System.out.println(YELLOW + "Game " + gameID + " closed because the field is full." + RESET);
+                                            if (Main.wantColoredConsole) {
+                                                System.out.println(YELLOW + "Game " + gameID + " closed because the field is full." + RESET);
+                                            } else {
+                                                System.out.println("Game " + gameID + " closed because the field is full.");
+                                            }
                                         }
                                     } else {
                                         if (otherPlayer != null) {
-                                            if (otherPlayer.won()) {
-                                                writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_OPPONENTWON, otherPlayer.name() + ";" + lastTurn + ";" + lineBlock.toSendable()));
+                                            if (otherPlayer.reconnected()) {
+                                                writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_RECONNECT, otherPlayer.name()));
+                                                writer.flush();
+                                                somethingPrinted = true;
+                                                otherPlayer.reconnected(false);
+                                            }
+                                            if (otherPlayer.won() && !somethingPrinted) {
+                                                writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_OPPONENTWON, otherPlayer.name() + ";" + lineBlock.getLastTurn() + ";" + lineBlock.toSendable()));
                                                 writer.flush();
                                                 somethingPrinted = true;
                                                 init.getServer(gameID).close();
-                                                System.out.println(YELLOW + "Game " + gameID + " closed because " + otherPlayer.name() + " won." + RESET);
+                                                if (Main.wantColoredConsole) {
+                                                    System.out.println(YELLOW + "Game " + GREEN + gameID + YELLOW + " closed because " + GREEN + otherPlayer.name() + YELLOW + " won." + RESET);
+                                                }
                                             }
                                         }
                                         if (lineBlock.isFull() && !somethingPrinted) {
@@ -127,7 +139,7 @@ public class ServerThread implements Runnable {
                                         }
                                         timeouter.resetTimeout(user);
                                         if (someoneReconnected) {
-                                            writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIEND_RECONNECT, timeoutedUser.name()));
+                                            writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_RECONNECT, timeoutedUser.name()));
                                             writer.flush();
                                             someoneReconnected = false;
                                             somethingPrinted = true;
@@ -136,7 +148,7 @@ public class ServerThread implements Runnable {
                                             for (Player p : players) {
                                                 if (p.name().equals(user.name())) {
                                                     if (p.isMyTurn()) {
-                                                        writer.println(codec.userSendString(ServerAnswer.YOUR_TURN, lineBlock.toSendable()));
+                                                        writer.println(codec.userSendString(ServerAnswer.YOUR_TURN, lineBlock.toSendable() + ";" + lineBlock.getLastTurn()));
                                                         writer.flush();
                                                         somethingPrinted = true;
                                                     }
@@ -187,6 +199,7 @@ public class ServerThread implements Runnable {
                                     if (player.isMyTurn()) {
                                         int playerSign = player.sign();
                                         boolean[] setStone = lineBlock.setRowValue(pos, playerSign);
+                                        lineBlock.setLastTurn(pos + 1);
                                         if (setStone[0]) {
                                             if (setStone[1]) {
                                                 player.won(true);

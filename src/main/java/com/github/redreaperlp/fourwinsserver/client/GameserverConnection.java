@@ -31,6 +31,7 @@ public class GameserverConnection implements Runnable {
     String RED = "\u001B[31m";
     String RESET = "\u001B[0m";
     String YELLOW = "\u001B[33m";
+    String GREEN = "\u001B[32m";
 
     /**
      * Thread for the connection to the gameserver
@@ -45,10 +46,8 @@ public class GameserverConnection implements Runnable {
                 TimeUnit.MILLISECONDS.sleep(500);
                 socket = new Socket(address, port);
                 PrintWriter writer = new PrintWriter(socket.getOutputStream());
-
                 writer.println(codec.userSendString(new User(name, password, ClientCommand.PING)));
                 writer.flush();
-
                 Scanner scanner = new Scanner(socket.getInputStream());
                 String input = scanner.nextLine();
                 Answer answer = codec.toServerAnswer(input);
@@ -56,47 +55,72 @@ public class GameserverConnection implements Runnable {
                     case NOTIFY_CLIENT_OPPONENTWON -> {
                         String playerName = answer.getAnswerData().split(";")[0];
                         int lastTurn = Integer.parseInt(answer.getAnswerData().split(";")[1]);
-                        lineBlock = new LineBlock(answer.getAnswerData().split(";")[2], lastTurn);
+                        lineBlock = new LineBlock(answer.getAnswerData().split(";")[2]);
                         printLine(20);
-                        System.out.println(RED + "You lost" + RESET);
+                        lineBlock.setLastTurn(lastTurn);
+                        lineBlock.print(true);
                         printLine(2);
-                        lineBlock.print();
+                        if (Main.wantColoredConsole) {
+                            System.out.println(RED + "You lost against " + YELLOW + playerName + RED + "!" + RESET);
+                        } else {
+                            System.out.println("You lost against " + playerName + "!");
+                        }
                         shouldStop = true;
                         reset();
                         return;
                     }
                     case NOTIFY_CLIENT_GAMESTART -> {
-                        printLine(20);
-                        System.out.println("Game is starting now");
+                        printLine(2);
+                        if (Main.wantColoredConsole) {
+                            System.out.println(GREEN + "Game is starting now" + RESET);
+                        } else {
+                            System.out.println("Game is starting now");
+                        }
                         gameStarted = true;
                     }
                     case NOTIFY_CLIENT_TIMEDOUT -> {
                         if (!timedOutNotified) {
                             printLine(4);
-                            System.out.println("Player " + answer.getAnswerData() + " timed out");
-                            timedOutNotified = true;
+                            if (Main.wantColoredConsole) {
+                                System.out.println(RED + "Player " + YELLOW + answer.getAnswerData() + RED + " timed out");
+                                timedOutNotified = true;
+                            } else {
+                                System.out.println("Player " + answer.getAnswerData() + " timed out");
+                                timedOutNotified = true;
+                            }
                         }
                     }
-                    case NOTIFY_CLIEND_RECONNECT -> {
+                    case NOTIFY_CLIENT_RECONNECT -> {
                         if (timedOutNotified) {
-                            printLine(4);
-                            System.out.println("Player " + answer.getAnswerData() + " Reconnected");
+                            if (Main.wantColoredConsole) {
+                                System.out.println(GREEN + "Player " + YELLOW + answer.getAnswerData() + GREEN + " reconnected" + RESET);
+                            } else {
+                                System.out.println("Player " + answer.getAnswerData() + " reconnected");
+                            }
                             timedOutNotified = false;
                         }
                     }
                     case YOUR_TURN -> {
                         if (!gameStarted) {
-                            printLine(20);
-                            System.out.println("Game started");
+                            printLine(2);
+                            if (Main.wantColoredConsole) {
+                                System.out.println(GREEN + "Game is starting now" + RESET);
+                            } else {
+                                System.out.println("Game is starting now");
+                            }
                             gameStarted = true;
                         }
                         if (!myTurn) {
                             printLine(20);
-                            lineBlock = new LineBlock(answer.getAnswerData());
-                            System.out.println(answer.getAnswerData());
+                            String[] answerDatas = answer.getAnswerData().split(";");
+                            lineBlock = new LineBlock(answerDatas[0], Integer.parseInt(answerDatas[1]));
                             printLine(2);
-                            lineBlock.print();
-                            System.out.print("It's your turn: ");
+                            lineBlock.print(true);
+                            if (Main.wantColoredConsole) {
+                                System.out.print(GREEN + "It's your turn: " + RESET);
+                            } else {
+                                System.out.print("It's your turn: ");
+                            }
                             PlayersTurnHandler playersTurnHandler = new PlayersTurnHandler(address, port, lineBlock, new User(name, password, ClientCommand.SET_STONE), iAmX, Thread.currentThread());
                             new Thread(playersTurnHandler).start();
                             myTurn = true;
