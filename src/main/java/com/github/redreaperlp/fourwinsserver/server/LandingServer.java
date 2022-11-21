@@ -114,7 +114,7 @@ public class LandingServer {
                                 writer.println(codec.userSendString(ServerAnswer.NOTIFY_CLIENT_WRONGVERSION, String.valueOf(Main.localeVersion)) + "\n");
                                 writer.flush();
                                 if (Main.wantColoredConsole) {
-                                    System.out.println(RED + "User " + user.name() + " tried to connect with the wrong version! (Local: " + Main.localeVersion + " | Remote: " + version + ")" + RESET);
+                                    System.out.println(RED + "User " + YELLOW + user.name() + RED + " tried to connect with the wrong version! " + YELLOW +"("+RED+"Local: "+YELLOW + Main.localeVersion + RED + " | Remote: " + YELLOW + version + RED + ")" + RESET);
                                 } else {
                                     System.out.println("User " + user.name() + " tried to connect with the wrong version! (Local: " + Main.localeVersion + " | Remote: " + version + ")");
                                 }
